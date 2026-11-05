@@ -60,7 +60,7 @@ All cross-page links must target these exact Starlight routes (with `docs/site/s
 | **Concepts**      | Security and Trust Boundaries                    | **P2**   | `content/docs/concepts/security.mdx`                                                             | `/concepts/security/`                                                                           |
 | **Concepts**      | Accessibility (A11y)                             | **P2**   | `content/docs/concepts/accessibility.mdx`                                                        | `/concepts/accessibility/`                                                                      |
 | **Concepts**      | Glossary                                         | **P2**   | `content/docs/concepts/glossary.mdx`                                                             | `/concepts/glossary/`                                                                           |
-| **Guides**        | How to Integrate with My Client                  | **P1**   | `content/docs/guides/client-integration.mdx`                                                     | `/guides/client-integration/`                                                                   |
+| **Guides**        | How to Integrate A2UI into a Client              | **P1**   | `content/docs/guides/client-integration.mdx`                                                     | `/guides/client-integration/`                                                                   |
 | **Guides**        | How to Integrate with My Agent Server            | **P1**   | `content/docs/guides/agent-integration.mdx`                                                      | `/guides/agent-integration/`                                                                    |
 | **Guides**        | How to Define a Catalog                          | **P1**   | `content/docs/guides/defining-a-catalog.mdx`                                                     | `/guides/defining-a-catalog/`                                                                   |
 | **Guides**        | Architecting an A2UI Integration                 | **P2**   | `content/docs/guides/architecting-an-integration.mdx`                                            | `/guides/architecting-an-integration/`                                                          |
@@ -248,7 +248,7 @@ _(Where `<ver>` is `v1.0`, `v0.9.1`, or `v0.8`.)_
     5. **Available Official Renderer SDKs Table**:
         - **Columns**: (1) _UI Framework / Platform_, (2) _Language_, (3) _Packages & Core Dependency_ (Framework Adapter, Core SDK, and Basic/Add-on Catalog packages where separate), (4) _Protocol Versions_, (5) _GitHub / Source Code_, (6) _Published Package_.
         - **Discovery Instructions**: Inspect `typescript/{core,renderers,catalogs}/*/package.json` (noting Web bundles the Basic Catalog in `@a2ui/lit` and `@a2ui/web_core/v0_9/universal`, while `typescript/catalogs/` houses add-on catalogs like `mcp` and `vegachart`), `dart/*/pubspec.yaml`, and the repo-root [`Package.swift`](../../Package.swift) (`A2UISwiftCore`, `A2UISwiftUI`, `BasicCatalog`, `BasicCatalogSwiftUI`), verifying `"private"` flags and live registry links. Explicitly include the **Jetpack Compose SDK**, consulting [https://developer.android.com/develop/ui/compose/agentic](https://developer.android.com/develop/ui/compose/agentic) for authoritative Maven coordinates, source links, and documentation.
-    6. **Next Steps / Integration Guide**: Follow the step-by-step client runtime setup, catalog registration, and reactive update mounting in [How to Integrate with My Client](#how-to-integrate-with-my-client) (`/guides/client-integration/`).
+    6. **Next Steps / Integration Guide**: Follow the step-by-step client runtime setup, catalog registration, and reactive update mounting in [How to Integrate A2UI into a Client](#how-to-integrate-a2ui-into-a-client) (`/guides/client-integration/`).
     7. **Community Renderers & Custom Adapters**: Cross-link to [`/ecosystem/renderers/`](#ecosystem-renderers--tools-ecosystemrenderers) and [`/guides/sdk-development/`](#sdk-development).
 
 <a id="swappable-inference-formats"></a>
@@ -305,9 +305,9 @@ _(Where `<ver>` is `v1.0`, `v0.9.1`, or `v0.8`.)_
 
 ### Guides
 
-<a id="how-to-integrate-with-my-client"></a>
+<a id="how-to-integrate-a2ui-into-a-client"></a>
 
-#### How to Integrate with My Client (`/guides/client-integration/`) [P1]
+#### How to Integrate A2UI into a Client (`/guides/client-integration/`) [P1]
 
 - **Sources**: Link to [Renderer SDKs](#renderer-sdks) (`/concepts/renderer-sdks/`) for package coordinates; verify APIs against `dart/a2ui_flutter/`, `typescript/renderers/`, `swift/swiftui/`, `samples/client/`, and [https://developer.android.com/develop/ui/compose/agentic](https://developer.android.com/develop/ui/compose/agentic).
 - **Content Outline** (tabbed across `Flutter` | `Web` | `SwiftUI` | `Jetpack Compose`):
