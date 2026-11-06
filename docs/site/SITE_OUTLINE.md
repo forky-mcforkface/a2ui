@@ -61,7 +61,7 @@ All cross-page links must target these exact Starlight routes (with `docs/site/s
 | **Concepts**      | Accessibility (A11y)                             | **P2**   | `content/docs/concepts/accessibility.mdx`                                                        | `/concepts/accessibility/`                                                                      |
 | **Concepts**      | Glossary                                         | **P2**   | `content/docs/concepts/glossary.mdx`                                                             | `/concepts/glossary/`                                                                           |
 | **Guides**        | How to Integrate with My Client                  | **P1**   | `content/docs/guides/client-integration.mdx`                                                     | `/guides/client-integration/`                                                                   |
-| **Guides**        | How to Integrate with My Agent Server            | **P1**   | `content/docs/guides/agent-integration.mdx`                                                      | `/guides/agent-integration/`                                                                    |
+| **Guides**        | How to Integrate A2UI into an Agent              | **P1**   | `content/docs/guides/agent-integration.mdx`                                                      | `/guides/agent-integration/`                                                                    |
 | **Guides**        | How to Define a Catalog                          | **P1**   | `content/docs/guides/defining-a-catalog.mdx`                                                     | `/guides/defining-a-catalog/`                                                                   |
 | **Guides**        | Architecting an A2UI Integration                 | **P2**   | `content/docs/guides/architecting-an-integration.mdx`                                            | `/guides/architecting-an-integration/`                                                          |
 | **Guides**        | How to Improve Latency                           | **P2**   | `content/docs/guides/improving-latency.mdx`                                                      | `/guides/improving-latency/`                                                                    |
@@ -228,7 +228,7 @@ _(Where `<ver>` is `v1.0`, `v0.9.1`, or `v0.8`.)_
     4. **Available Official Agent SDKs Table**:
         - **Columns**: (1) _Language / Runtime_, (2) _Packages & Roles_ (Agent SDK, framework adapters like ADK/A2A, and Core SDK dependency), (3) _Protocol Versions_, (4) _GitHub Source_ (deep link in `a2ui-project/a2ui`), (5) _Published Package_ (direct link on PyPI, npm, pub.dev, or explicit in-repo status).
         - **Discovery Instructions**: Inspect `python/*/pyproject.toml`, `typescript/agents/*/package.json`, `typescript/core/*/package.json`, `dart/*/pubspec.yaml`, and `kotlin/` legacy notes; verify `"private"` flags, release tags, and live registry URLs. Note that Swift targets client rendering (`A2UISwiftCore` / `A2UISwiftUI`) rather than server-side agent generation.
-    5. **Next Steps / Integration Guide**: Follow the step-by-step server setup and framework wiring in [How to Integrate with My Agent Server](#how-to-integrate-with-my-agent-server) (`/guides/agent-integration/`).
+    5. **Next Steps / Integration Guide**: Follow the step-by-step server setup and framework wiring in [How to Integrate A2UI into an Agent](#how-to-integrate-a2ui-into-an-agent) (`/guides/agent-integration/`).
     6. **Community & Custom SDKs**: Cross-link to [`/ecosystem/renderers/`](#ecosystem-renderers--tools-ecosystemrenderers) and [`/guides/sdk-development/`](#sdk-development).
 
 <a id="renderer-sdks"></a>
@@ -319,9 +319,9 @@ _(Where `<ver>` is `v1.0`, `v0.9.1`, or `v0.8`.)_
     6. **Step 5: Mount Surface Components**: Verified surface widget/component mounting snippets per renderer.
     7. **Step 6: Handle Outbound Actions, RPCs & Validation Errors**: Subscribing to outbound `action` events (attaching `a2uiRendererDataModel` / `a2uiClientDataModel` transport metadata when `sendDataModel: true`), `callAgentFunction`, `rendererFunctionResponse`, and `error` events.
 
-<a id="how-to-integrate-with-my-agent-server"></a>
+<a id="how-to-integrate-a2ui-into-an-agent"></a>
 
-#### How to Integrate with My Agent Server (`/guides/agent-integration/`) [P1]
+#### How to Integrate A2UI into an Agent (`/guides/agent-integration/`) [P1]
 
 - **Sources**: Link to [Agent SDKs](#agent-sdks) (`/concepts/agent-sdks/`) for package coordinates; verify APIs against `python/a2ui_agent/`, `python/a2ui_adk/`, `python/a2ui_a2a/`, `typescript/agents/a2ui_agent/`, `dart/a2ui_agent/`, and [`docs/public/guides/a2ui-with-any-agent-framework.md`](../public/guides/a2ui-with-any-agent-framework.md).
 - **Content Outline** (tabbed across `TypeScript` | `Python` | `Dart`):
@@ -352,7 +352,7 @@ _(Where `<ver>` is `v1.0`, `v0.9.1`, or `v0.8`.)_
 
 - **Content Outline**:
     1. **Catalog Strategy (Basic vs. Custom vs. Hybrid & Macros)**: Compare off-the-shelf Basic Catalog, custom design-system catalogs, and hybrid composition, plus a 1-sentence trade-off linking to [`/concepts/macros/`](#macros) (agile web client components vs. server macros avoiding mobile app-store release cycles).
-    2. **Transport Selection**: Compare standardized agent protocols (**AG-UI** and **A2A**, linking to [`/guides/agent-integration/`](#how-to-integrate-with-my-agent-server)) and **MCP** (`ui://` resources, linking to [`/guides/a2ui-over-mcp/`](#a2ui-over-mcp)) alongside custom transport patterns (**SSE + HTTP POST**, noting HTTP/1.1 connection limits vs. HTTP/2, and **WebSockets** for full-duplex RPCs).
+    2. **Transport Selection**: Compare standardized agent protocols (**AG-UI** and **A2A**, linking to [`/guides/agent-integration/`](#how-to-integrate-a2ui-into-an-agent)) and **MCP** (`ui://` resources, linking to [`/guides/a2ui-over-mcp/`](#a2ui-over-mcp)) alongside custom transport patterns (**SSE + HTTP POST**, noting HTTP/1.1 connection limits vs. HTTP/2, and **WebSockets** for full-duplex RPCs).
     3. **Content Persistence & Session Replay**: Explain the **Wire-Only Replay Trap** (local two-way input bindings mutate `dataModel` without emitting wire messages, so replaying `agent_to_renderer` messages alone loses user form edits) and the recommended pattern (persisting per-surface `renderer_data_model.json` snapshots alongside messages, filtering transient `callRendererFunction` RPCs, and rendering historical turns read-only when appropriate) vs. static rendered snapshots.
     4. **Surface Scoping & Lifecycle**: Compare Conversation Scoping (single `MessageProcessor` per conversation enabling retroactive in-place updates) vs. Turn Scoping (isolated `MessageProcessor` per turn, requiring turn-prefixed unique `surfaceId`s like `turn_2_main` rather than reusing `"main"`).
 
