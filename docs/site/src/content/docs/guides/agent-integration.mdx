@@ -310,7 +310,7 @@ Client renderers attach their supported [capabilities](../../concepts/glossary/#
 />
 
 <Tabs syncKey="protocol-version">
-  <TabItem label="v1.0 (Candidate)">
+  <TabItem label="v1.0">
 
 ```json
 {
@@ -325,7 +325,7 @@ Client renderers attach their supported [capabilities](../../concepts/glossary/#
 ```
 
   </TabItem>
-  <TabItem label="v0.9.1 (Active)">
+  <TabItem label="v0.9.1">
 
 ```json
 {
@@ -575,7 +575,7 @@ The parser compiles that block into validated JSON messages (`"version": "1.0"` 
 />
 
 <Tabs syncKey="protocol-version">
-  <TabItem label="v1.0 (Candidate)">
+  <TabItem label="v1.0">
 
 ```json
 [
@@ -609,7 +609,7 @@ The parser compiles that block into validated JSON messages (`"version": "1.0"` 
 ```
 
   </TabItem>
-  <TabItem label="v0.9.1 (Active)">
+  <TabItem label="v0.9.1">
 
 ```json
 [
@@ -938,64 +938,72 @@ Below are the wire envelopes for an inbound [`action`](../../concepts/messages/#
 />
 
 <Tabs syncKey="protocol-version">
-  <TabItem label="v1.0 (Candidate)">
+  <TabItem label="v1.0">
+
+Inbound `action` request with `a2uiRendererDataModel` transport metadata:
 
 ```json
 {
-  "actionEnvelope": {
-    "message": {
-      "version": "1.0",
-      "action": {
-        "name": "confirm_order",
-        "surfaceId": "order_summary",
-        "sourceComponentId": "confirm_btn",
-        "timestamp": "2026-05-01T18:30:00.000Z",
-        "context": {
-          "orderId": "ORD-4821"
-        }
-      }
-    },
-    "metadata": {
-      "a2uiRendererDataModel": {
-        "version": "1.0",
-        "surfaces": {
-          "order_summary": {
-            "orderId": "ORD-4821",
-            "summaryText": "2 items ready for pickup"
-          }
-        }
-      }
-    }
-  },
-  "callAgentFunction": {
+  "message": {
     "version": "1.0",
-    "callAgentFunction": {
+    "action": {
+      "name": "confirm_order",
       "surfaceId": "order_summary",
-      "functionCallId": "call_01",
-      "callFunction": {
-        "@call": "lookupPickupEta",
-        "catalogId": "https://example.com/catalogs/orders/v1/catalog.json",
-        "args": {
-          "orderId": "ORD-4821"
-        }
+      "sourceComponentId": "confirm_btn",
+      "timestamp": "2026-05-01T18:30:00.000Z",
+      "context": {
+        "orderId": "ORD-4821"
       }
     }
   },
-  "agentFunctionResponse": {
-    "version": "1.0",
-    "agentFunctionResponse": {
-      "functionCallId": "call_01",
-      "value": {
-        "orderId": "ORD-4821",
-        "eta": "Today, 5:30 PM"
+  "metadata": {
+    "a2uiRendererDataModel": {
+      "version": "1.0",
+      "surfaces": {
+        "order_summary": {
+          "orderId": "ORD-4821",
+          "summaryText": "2 items ready for pickup"
+        }
       }
     }
   }
 }
 ```
 
+Inbound `callAgentFunction` wire message and outbound `agentFunctionResponse` reply:
+
+```json
+{
+  "version": "1.0",
+  "callAgentFunction": {
+    "surfaceId": "order_summary",
+    "functionCallId": "call_01",
+    "callFunction": {
+      "@call": "lookupPickupEta",
+      "catalogId": "https://example.com/catalogs/orders/v1/catalog.json",
+      "args": {
+        "orderId": "ORD-4821"
+      }
+    }
+  }
+}
+```
+
+```json
+{
+  "version": "1.0",
+  "agentFunctionResponse": {
+    "functionCallId": "call_01",
+    "value": {
+      "orderId": "ORD-4821",
+      "eta": "Today, 5:30 PM"
+    }
+  }
+}
+```
+
   </TabItem>
-  <TabItem label="v0.9.1 (Active)">
+  <TabItem label="v0.9.1">
 
 ```json
 {
@@ -1064,7 +1072,11 @@ async function readJson(req: IncomingMessage): Promise<AgentRequestBody> {
 async function* callModelStream(systemPrompt: string, userPrompt: string): AsyncGenerator<string> {
   // Replace with your LLM SDK streaming call (e.g., Gemini, OpenAI, Anthropic).
   void systemPrompt;
-  void userPrompt;
+  if (userPrompt.startsWith('User triggered action')) {
+    yield '<a2ui>\nsurface("order_summary", update=true)\n';
+    yield '$/summaryText = "Order ORD-4821 confirmed for pickup"\n</a2ui>';
+    return;
+  }
   yield '<a2ui>\nsurface("order_summary", sendDataModel=true)\n';
   yield '$/orderId = "ORD-4821"\n$/summaryText = "2 items ready for pickup"\n';
   yield 'root = Card(col)\ncol = Column([headline, confirm_btn])\n';
@@ -1134,7 +1146,11 @@ async def call_model_stream(
     system_prompt: str, user_prompt: str
 ) -> AsyncIterable[str]:
   # Replace with your LLM SDK streaming call (e.g., google-genai, openai, anthropic).
-  del system_prompt, user_prompt
+  del system_prompt
+  if user_prompt.startswith("User triggered action"):
+    yield '<a2ui>\nsurface("order_summary", update=true)\n'
+    yield '$/summaryText = "Order ORD-4821 confirmed for pickup"\n</a2ui>'
+    return
   yield '<a2ui>\nsurface("order_summary", sendDataModel=true)\n'
   yield '$/orderId = "ORD-4821"\n$/summaryText = "2 items ready for pickup"\n'
   yield "root = Card(col)\ncol = Column([headline, confirm_btn])\n"
@@ -1186,6 +1202,11 @@ Stream<String> callModelStream(
   String userPrompt,
 ) async* {
   // Replace with your LLM SDK streaming call.
+  if (userPrompt.startsWith('User triggered action')) {
+    yield '<a2ui>\nsurface("order_summary", update=true)\n';
+    yield '\$/summaryText = "Order ORD-4821 confirmed for pickup"\n</a2ui>';
+    return;
+  }
   yield '<a2ui>\nsurface("order_summary", sendDataModel=true)\n';
   yield '\$/orderId = "ORD-4821"\n\$/summaryText = "2 items ready for pickup"\n';
   yield 'root = Card(col)\ncol = Column([headline, confirm_btn])\n';
